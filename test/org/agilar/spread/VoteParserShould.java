@@ -8,18 +8,18 @@ import org.junit.Test;
 
 public class VoteParserShould {
 
-	VoteParser parser;
+	JsonVoteParser parser;
 
 	@Before
 	public void setUp() throws Exception {
-		parser = new VoteParser();
+		parser = new JsonVoteParser();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 	}
 
-	@Test(expected=ParseException.class)
+	@Test(expected=VotingException.class)
 	public void fail_if_missing_consultant_data() {
 		parser.parse("{\"adrian\":3}");
 	}
@@ -29,7 +29,7 @@ public class VoteParserShould {
 		
 		parser.parse("{\"adrian\":1,\"alan\":2,\"alberto\":3,\"andres\":4,\"angel\":5,\"ariel\":6,\"david\":7,\"fernando\":8,\"joke\":9,\"joserra\":10,\"peter\":11,\"soledad\":12,\"tiago\":13,\"wouter\":14,\"xavier\":15}");
 
-		StockSpread testVote = parser.getData();
+		Vote testVote = parser.getData();
 		
 		assertEquals(1, testVote.getValue(Consultant.ADRIAN), 0.01);
 		assertEquals(2, testVote.getValue(Consultant.ALAN), 0.01);
@@ -48,7 +48,7 @@ public class VoteParserShould {
 		assertEquals(15, testVote.getValue(Consultant.XAVIER), 0.01);
 	}
 	
-	@Test(expected=ParseException.class)
+	@Test(expected=VotingException.class)
 	public void fail_if_data_is_not_numeric(){
 		parser.parse("{\"adrian\":\"One\",\"alan\":2,\"alberto\":3,\"andres\":4,\"angel\":5,\"ariel\":6,\"david\":7,\"fernando\":8,\"joke\":9,\"joserra\":10,\"peter\":11,\"soledad\":12,\"tiago\":13,\"wouter\":14,\"xavier\":15}");
 	}

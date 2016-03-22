@@ -20,29 +20,29 @@ public class SpreadDataFileReaderShould {
 
 	@Test
 	public void read_data_from_months_per_consultant() throws FileNotFoundException {
-		SpreadDataFileReader reader = new SpreadDataFileReader("files", new VoteParser());
+		VoteDataFileReader reader = new VoteDataFileReader("files", new JsonVoteParser());
 		
 		reader.scanData();
 		VotingRound spreadData = reader.getData();
 		
-		StockSpread adriansVote = spreadData.getStockSpread(Consultant.ADRIAN);
+		Vote adriansVote = spreadData.getVote(Consultant.ADRIAN);
 		assertEquals(23, adriansVote.getMonthsAsConsultant());
 	}
 	
 	@Test
 	public void read_data_from_all_consultants() throws Exception {
-		SpreadDataFileReader reader = new SpreadDataFileReader("files", new VoteParser());
+		VoteDataFileReader reader = new VoteDataFileReader("files", new JsonVoteParser());
 		
 		reader.scanData();
 		VotingRound spreadData = reader.getData();
 		
-		StockSpread adriansVote = spreadData.getStockSpread(Consultant.ADRIAN);
+		Vote adriansVote = spreadData.getVote(Consultant.ADRIAN);
 		assertEquals(3, adriansVote.getPercentage(Consultant.ADRIAN), 0.1);
 
-		StockSpread alansVote = spreadData.getStockSpread(Consultant.ALAN);
+		Vote alansVote = spreadData.getVote(Consultant.ALAN);
 		assertEquals(10, alansVote.getPercentage(Consultant.ALAN), 0.1);
 
-		StockSpread xaviersVote = spreadData.getStockSpread(Consultant.XAVIER);
+		Vote xaviersVote = spreadData.getVote(Consultant.XAVIER);
 		assertEquals(40, xaviersVote.getPercentage(Consultant.XAVIER), 0.1);
 	}
 

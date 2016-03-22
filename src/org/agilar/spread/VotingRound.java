@@ -2,40 +2,58 @@ package org.agilar.spread;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class VotingRound {
 
-	Map<Consultant, StockSpread> roundData;
-	StockSpread average;
+	Map<Consultant, Vote> roundData;
+	Vote average;
 	
 	public VotingRound(){
-		this.roundData = new HashMap<Consultant, StockSpread>();
-		this.average = new StockSpread();
+		this.roundData = new HashMap<Consultant, Vote>();
+		this.average = new Vote();
 	}
 	
-	public void putStockSpread(Consultant consultant, StockSpread data) {
+	public void addVote(Consultant consultant, Vote data) {
 		this.roundData.put(consultant, data);
 	}
 
-	public StockSpread getStockSpread(Consultant consultant) {
+	public Vote getVote(Consultant consultant) {
 		return this.roundData.get(consultant);
 	}
 
 	public void calculateAverage() {
-		int totalMonths = 0;
-		for(Consultant voted: Consultant.values()){
-			totalMonths += this.roundData.get(voted).getMonthsAsConsultant();
+		for(Consultant voted: getAllConsultants()){
 			int sumPoints = 0;
-			for(Consultant voter: Consultant.values()){
-				sumPoints+= this.roundData.get(voter).getPoints(voted);
+			for(Consultant voter: getVotingConsultants()){
+				Vote vote = this.roundData.get(voter);
+				sumPoints+= vote.getPoints(voted);
 			}
 			this.average.setValue(voted, sumPoints);
-			this.average.setMonthsAsConsultant(totalMonths);
 		}
+		
+		calculateTotalMonths();
 		this.average.calculateValues();
 	}
 
-	public StockSpread getAverageStockSpread() {
+	private void calculateTotalMonths() {
+		int totalMonths = 0;
+		for(Consultant voter: getVotingConsultants()){
+			totalMonths += this.roundData.get(voter).getMonthsAsConsultant();
+		}
+		this.average.setMonthsAsConsultant(totalMonths);
+		
+	}
+
+	private Consultant[] getAllConsultants() {
+		return Consultant.values();
+	}
+
+	private Set<Consultant> getVotingConsultants() {
+		return this.roundData.keySet();
+	}
+
+	public Vote getAverageVote() {
 		return this.average;
 	}
 
