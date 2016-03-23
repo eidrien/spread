@@ -247,28 +247,48 @@ public class VoteShould {
 	}
 	
 	public static Vote createValidStockSpread2(int monthsAsConsultant){
-		Vote spread = new Vote();
-		spread.setMonthsAsConsultant(monthsAsConsultant);
+		Vote vote = new Vote();
+		vote.setMonthsAsConsultant(monthsAsConsultant);
 
-		spread.setValue(Consultant.ADRIAN, 6);
-		spread.setValue(Consultant.ALAN, 6);
-		spread.setValue(Consultant.ALBERTO, 6);
-		spread.setValue(Consultant.ANDRES, 6);
-		spread.setValue(Consultant.ANGEL, 6);
-		spread.setValue(Consultant.ARIEL, 6);
-		spread.setValue(Consultant.DAVID, 6);
-		spread.setValue(Consultant.FERNANDO, 6);
-		spread.setValue(Consultant.JOKE, 6);
-		spread.setValue(Consultant.JOSERRA, 5);
-		spread.setValue(Consultant.PETER, 5);
-		spread.setValue(Consultant.SOLEDAD, 5);
-		spread.setValue(Consultant.TIAGO, 5);
-		spread.setValue(Consultant.WOUTER, 5);
-		spread.setValue(Consultant.XAVIER, 21);
+		vote.setValue(Consultant.ADRIAN, 6);
+		vote.setValue(Consultant.ALAN, 6);
+		vote.setValue(Consultant.ALBERTO, 6);
+		vote.setValue(Consultant.ANDRES, 6);
+		vote.setValue(Consultant.ANGEL, 6);
+		vote.setValue(Consultant.ARIEL, 6);
+		vote.setValue(Consultant.DAVID, 6);
+		vote.setValue(Consultant.FERNANDO, 6);
+		vote.setValue(Consultant.JOKE, 6);
+		vote.setValue(Consultant.JOSERRA, 5);
+		vote.setValue(Consultant.PETER, 5);
+		vote.setValue(Consultant.SOLEDAD, 5);
+		vote.setValue(Consultant.TIAGO, 5);
+		vote.setValue(Consultant.WOUTER, 5);
+		vote.setValue(Consultant.XAVIER, 21);
 		
-		spread.calculateValues();
+		vote.calculateValues();
 		
-		return spread;
+		return vote;
 	}
 	
+	@Test
+	public void calculated_deviation_is_0_when_all_votes_are_the_same() throws Exception {
+		Vote reference = createValidStockSpread1(2);
+		Vote equalToReference = createValidStockSpread1(2);
+
+		double deviation = reference.calculateDeviation(equalToReference);
+		
+		assertEquals(0, deviation, 0.001);
+	}
+
+	@Test
+	public void deviation_is_calculated_correctly_when_all_values_are_different() throws Exception {
+		Vote reference = createValidStockSpread1(2);
+		Vote differentToReference = createValidStockSpread2(2);
+
+		double deviation = reference.calculateDeviation(differentToReference);
+		
+		assertEquals(4.8, deviation, 0.001);
+	}
+
 }

@@ -19,7 +19,7 @@ public class VoteDataFileReader {
 	}
 
 	public void scanData() throws FileNotFoundException {
-		VotingRound round = new VotingRound();
+		VotingRound round = new VotingRound(new VoteFactory());
 		for(Consultant consultant : Consultant.values()){
 			try{
 				File spreadFile = new File(directory, "stockSpread-"+consultant.name().toLowerCase()+".json");

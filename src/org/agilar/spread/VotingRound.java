@@ -1,6 +1,9 @@
 package org.agilar.spread;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,10 +11,15 @@ public class VotingRound {
 
 	Map<Consultant, Vote> roundData;
 	Vote average;
+	Deviation deviation;
+	Ranking ranking;
 	
-	public VotingRound(){
+	
+	public VotingRound(VoteFactory factory){
 		this.roundData = new HashMap<Consultant, Vote>();
-		this.average = new Vote();
+		this.average = factory.createAverageVote();
+		this.deviation = factory.createDeviationVote();
+		this.ranking = factory.createRanking();
 	}
 	
 	public void addVote(Consultant consultant, Vote data) {
@@ -22,7 +30,13 @@ public class VotingRound {
 		return this.roundData.get(consultant);
 	}
 
-	public void calculateAverage() {
+	public void calculateStatistics() {
+		calculateAverage();
+		calculateDeviationFromAverage();
+		calculateRanking();
+	}
+
+	private void calculateAverage() {
 		for(Consultant voted: getAllConsultants()){
 			int sumPoints = 0;
 			for(Consultant voter: getVotingConsultants()){
@@ -34,6 +48,19 @@ public class VotingRound {
 		
 		calculateTotalMonths();
 		this.average.calculateValues();
+	}
+
+	private void calculateDeviationFromAverage() {
+		
+		for(Consultant voter: getVotingConsultants()){
+			Vote vote = this.roundData.get(voter);
+			double averageDeviation = this.average.calculateDeviation(vote);
+			this.deviation.setValue(voter, averageDeviation);
+		}
+	}
+	
+	private void calculateRanking(){
+		this.ranking.setDeviation(deviation);
 	}
 
 	private void calculateTotalMonths() {
@@ -55,6 +82,34 @@ public class VotingRound {
 
 	public Vote getAverageVote() {
 		return this.average;
+	}
+
+	public Deviation getDeviationsFromAverage() {
+		return deviation;
+	}
+
+	public String toString() {
+		StringBuffer text = new StringBuffer();
+		
+		Vote average = this.getAverageVote();
+		text.append("===== Average Stock Distribution =====");
+		text.append("\n");
+		text.append(average.toString());
+		text.append("\n");
+		
+		Deviation deviation = this.getDeviationsFromAverage();
+
+		text.append("===== Deviation from Average per Member =====");
+		text.append("\n");
+		text.append(deviation.toString());
+		text.append("\n");
+		
+		text.append("===== Ranking of Members per Deviation =====");
+		text.append("\n");
+		text.append(ranking.toString());
+		text.append("\n");
+		
+		return text.toString();
 	}
 
 }

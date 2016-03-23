@@ -33,7 +33,9 @@ public class Vote {
 	private Map<Consultant, Double> values;
 
 	public double getValue(Consultant consultant) {
-		return this.values.get(consultant);
+		
+		Double value = this.values.get(consultant);
+		return (value==null)?0:value;
 	}
 
 	public void setValue(Consultant consultant, double value) {
@@ -143,6 +145,14 @@ public class Vote {
 		}
 		sb.append("}");
 		return sb.toString();
+	}
+
+	public double calculateDeviation(Vote vote) {
+		double totalDeviation = 0;
+		for(Consultant voted: Consultant.values()){
+			totalDeviation += Math.abs(this.getPercentage(voted) - vote.getPercentage(voted));
+		}
+		return totalDeviation / Consultant.values().length;
 	}
 
 }

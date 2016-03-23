@@ -11,9 +11,9 @@ public class StockSpreadCalculator {
 		
 		VotingRound round = fileReader.getData();
 		
-		round.calculateAverage();
-		Vote average = round.getAverageVote();
+		round.calculateStatistics();
+		System.out.println(round);
 		
-		System.out.println(average.toString());
 	}
+
 }
